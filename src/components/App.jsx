@@ -18,37 +18,42 @@ export default function App() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    setIsLoading(true);
+    if (!query) {
+      return;
+    }
+
     console.log(page);
     console.log(query);
 
-    getPictures(query, page)
-      .then(response => {
-        if (response.ok) {
-          return response.json();
-        }
-        return Promise.reject(
-          new Error(`Sorry, but nothing was found for your request ${query}`)
-        );
-      })
-      .then(newPictures => {
-        if (newPictures.total === 0) {
-          Notiflix.Notify.info('Sorry, but nothing was found for your query');
-        }
-        setPictures(prevState => [...prevState.pictures, ...newPictures.hits]);
-        setShowButton(page < Math.ceil(newPictures.totalHits / 12));
-      })
-      .catch(error => {
-        setError(error);
-        setShowButton(false);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
-
-    //   // return () => {
-    //   //   second;
-    //   // };
+    const fetchPictures = () => {
+      setIsLoading(true);
+      getPictures(query, page)
+        .then(response => {
+          if (response.ok) {
+            return response.json();
+          }
+          return Promise.reject(
+            new Error(`Sorry, but nothing was found for your request ${query}`)
+          );
+        })
+        .then(newPictures => {
+          if (newPictures.total === 0) {
+            Notiflix.Notify.info('Sorry, but nothing was found for your query');
+          }
+          setPictures(prevState => [...prevState, ...newPictures.hits]);
+          setShowButton(page < Math.ceil(newPictures.totalHits / 12));
+        })
+        .catch(error => {
+          setError(error);
+          setShowButton(false);
+        })
+        .finally(() => {
+          setIsLoading(false);
+          console.log(page);
+          console.log(query);
+        });
+    };
+    fetchPictures();
   }, [page, query]);
 
   const handleSearchFormSubmit = query => {
