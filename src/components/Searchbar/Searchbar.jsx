@@ -1,5 +1,5 @@
 import { useState } from 'react';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 
 import { IconContext } from 'react-icons';
 import { BsSearch } from 'react-icons/bs';
@@ -56,6 +56,6 @@ export default function Searchbar({ onSubmit }) {
   );
 }
 
-// Searchbar.propTypes = {
-//   query: PropTypes.string.isRequired,
-// };
+Searchbar.propTypes = {
+  query: PropTypes.string.isRequired,
+};
