@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-// import Notiflix from 'notiflix';
+import Notiflix from 'notiflix';
 
 import Searchbar from './Searchbar';
 import Loader from './Loader';
-// import { getPictures } from '../services/getPictures';
+import { getPictures } from '../services/getPictures';
 import ImageGallery from './ImageGallery';
 import Button from './Button';
 
@@ -18,33 +18,33 @@ export default function App() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    //   // setIsLoading(true);
+    setIsLoading(true);
     console.log(page);
     console.log(query);
-    //   // console.log(getPictures(query, page));
-    //   // getPictures(query, page);
-    //   //   .then(response => {
-    //   //     if (response.ok) {
-    //   //       return response.json();
-    //   //     }
-    //   //     return Promise.reject(
-    //   //       new Error(`Sorry, but nothing was found for your request ${query}`)
-    //   //     );
-    //   //   })
-    //   //   .then(newPictures => {
-    //   //     if (newPictures.total === 0) {
-    //   //       Notiflix.Notify.info('Sorry, but nothing was found for your query');
-    //   //     }
-    //   //     setPictures(prevState => [...prevState.pictures, ...newPictures.hits]);
-    //   //     // setShowButton(page < Math.ceil(newPictures.totalHits / 12));
-    //   //   })
-    //   //   .catch(error => {
-    //   //     setError(error);
-    //   //     setShowButton(false);
-    //   //   })
-    //   //   .finally(() => {
-    //   //     setIsLoading(false);
-    //   //   });
+
+    getPictures(query, page)
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        }
+        return Promise.reject(
+          new Error(`Sorry, but nothing was found for your request ${query}`)
+        );
+      })
+      .then(newPictures => {
+        if (newPictures.total === 0) {
+          Notiflix.Notify.info('Sorry, but nothing was found for your query');
+        }
+        setPictures(prevState => [...prevState.pictures, ...newPictures.hits]);
+        setShowButton(page < Math.ceil(newPictures.totalHits / 12));
+      })
+      .catch(error => {
+        setError(error);
+        setShowButton(false);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
 
     //   // return () => {
     //   //   second;
