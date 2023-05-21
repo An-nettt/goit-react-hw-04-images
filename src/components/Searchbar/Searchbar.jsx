@@ -1,5 +1,5 @@
-import { Component } from 'react';
-import PropTypes from 'prop-types';
+import { useState } from 'react';
+// import PropTypes from 'prop-types';
 
 import { IconContext } from 'react-icons';
 import { BsSearch } from 'react-icons/bs';
@@ -11,55 +11,51 @@ import {
   SearchFormInput,
 } from './SearchbarStyled';
 
-export default class Searchbar extends Component {
-  state = {
-    query: '',
+export default function Searchbar({ onSubmit }) {
+  const [query, setQuery] = useState('');
+
+  const handleQueryChange = event => {
+    setQuery(event.currentTarget.value.toLowerCase());
   };
 
-  handleQueryChange = event => {
-    this.setState({ query: event.currentTarget.value.toLowerCase() });
-  };
-
-  handleSubmit = event => {
+  const handleSubmit = event => {
     event.preventDefault();
 
-    if (this.state.query.trim() === '') {
+    if (query.trim() === '') {
       return;
     }
-    this.props.onSubmit(this.state.query);
-    this.setState({ query: '' });
+    onSubmit(query);
+    setQuery('');
   };
 
-  render() {
-    return (
-      <SearchbarStyle>
-        <SearchForm onSubmit={this.handleSubmit}>
-          <SearchFormButton type="submit">
-            <IconContext.Provider
-              value={{
-                color: 'black',
-                size: 17,
-                style: { verticalAlign: 'middle' },
-              }}
-            >
-              <BsSearch />
-            </IconContext.Provider>
-          </SearchFormButton>
+  return (
+    <SearchbarStyle>
+      <SearchForm onSubmit={handleSubmit}>
+        <SearchFormButton type="submit">
+          <IconContext.Provider
+            value={{
+              color: 'black',
+              size: 17,
+              style: { verticalAlign: 'middle' },
+            }}
+          >
+            <BsSearch />
+          </IconContext.Provider>
+        </SearchFormButton>
 
-          <SearchFormInput
-            type="text"
-            value={this.state.query}
-            autocomplete="off"
-            autoFocus
-            placeholder="Search images and photos"
-            onChange={this.handleQueryChange}
-          />
-        </SearchForm>
-      </SearchbarStyle>
-    );
-  }
+        <SearchFormInput
+          type="text"
+          value={query}
+          autocomplete="off"
+          autoFocus
+          placeholder="Search images and photos"
+          onChange={handleQueryChange}
+        />
+      </SearchForm>
+    </SearchbarStyle>
+  );
 }
 
-Searchbar.propTypes = {
-  query: PropTypes.string.isRequired,
-};
+// Searchbar.propTypes = {
+//   query: PropTypes.string.isRequired,
+// };
