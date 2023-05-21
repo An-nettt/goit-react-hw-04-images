@@ -1,81 +1,74 @@
-import { Component } from 'react';
-import Notiflix from 'notiflix';
+import { useState, useEffect } from 'react';
+// import Notiflix from 'notiflix';
 
 import Searchbar from './Searchbar';
 import Loader from './Loader';
-import { getPictures } from '../services/getPictures';
+// import { getPictures } from '../services/getPictures';
 import ImageGallery from './ImageGallery';
 import Button from './Button';
 
 import { AppStyled } from './AppStyled';
 
-export default class App extends Component {
-  state = {
-    query: '',
-    pictures: [],
-    page: 1,
-    isLoading: false,
-    showButton: false,
-    error: null,
+export default function App() {
+  const [query, setQuery] = useState('');
+  const [pictures, setPictures] = useState([]);
+  const [page, setPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+  const [showButton, setShowButton] = useState(false);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    //   // setIsLoading(true);
+    console.log(page);
+    console.log(query);
+    //   // console.log(getPictures(query, page));
+    //   // getPictures(query, page);
+    //   //   .then(response => {
+    //   //     if (response.ok) {
+    //   //       return response.json();
+    //   //     }
+    //   //     return Promise.reject(
+    //   //       new Error(`Sorry, but nothing was found for your request ${query}`)
+    //   //     );
+    //   //   })
+    //   //   .then(newPictures => {
+    //   //     if (newPictures.total === 0) {
+    //   //       Notiflix.Notify.info('Sorry, but nothing was found for your query');
+    //   //     }
+    //   //     setPictures(prevState => [...prevState.pictures, ...newPictures.hits]);
+    //   //     // setShowButton(page < Math.ceil(newPictures.totalHits / 12));
+    //   //   })
+    //   //   .catch(error => {
+    //   //     setError(error);
+    //   //     setShowButton(false);
+    //   //   })
+    //   //   .finally(() => {
+    //   //     setIsLoading(false);
+    //   //   });
+
+    //   // return () => {
+    //   //   second;
+    //   // };
+  }, [page, query]);
+
+  const handleSearchFormSubmit = query => {
+    setQuery(query);
+    setPage(1);
+    setPictures([]);
+    setError(null);
   };
 
-  componentDidUpdate(prevProps, prevState) {
-    if (
-      prevState.query !== this.state.query ||
-      prevState.page !== this.state.page
-    ) {
-      this.setState({ isLoading: true });
-
-      getPictures(this.state.query, this.state.page)
-        .then(response => {
-          if (response.ok) {
-            return response.json();
-          }
-          return Promise.reject(
-            new Error(
-              `Sorry, but nothing was found for your request ${this.state.query}`
-            )
-          );
-        })
-
-        .then(newPictures => {
-          if (newPictures.total === 0) {
-            Notiflix.Notify.info('Sorry, but nothing was found for your query');
-          }
-          this.setState(prevState => ({
-            pictures: [...prevState.pictures, ...newPictures.hits],
-            showButton: this.state.page < Math.ceil(newPictures.totalHits / 12),
-          }));
-        })
-        .catch(error => this.setState({ error, showButton: false }))
-        .finally(() => {
-          this.setState({ isLoading: false });
-        });
-    }
-  }
-
-  handleSearchFormSubmit = query => {
-    this.setState({ page: 1, pictures: [], query });
+  const handleCllickNextButton = () => {
+    setPage(prevPage => prevPage + 1);
   };
 
-  handleCllickNextButton = () => {
-    this.setState(prevState => ({ page: prevState.page + 1 }));
-  };
-
-  render() {
-    const { pictures, isLoading, showButton, error } = this.state;
-
-    return (
-      <AppStyled>
-        <Searchbar onSubmit={this.handleSearchFormSubmit} />
-        {isLoading && <Loader />}
-        {error && <p>{error.message}</p>}
-        <ImageGallery pictures={pictures} />
-        {showButton && <Button onClick={this.handleCllickNextButton} />}
-      </AppStyled>
-    );
-  }
+  return (
+    <AppStyled>
+      <Searchbar onSubmit={handleSearchFormSubmit} />
+      {isLoading && <Loader />}
+      {error && <p>{error.message}</p>}
+      <ImageGallery pictures={pictures} />
+      {showButton && <Button onClick={handleCllickNextButton} />}
+    </AppStyled>
+  );
 }
-
-//
-//
