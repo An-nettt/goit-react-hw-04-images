@@ -22,9 +22,6 @@ export default function App() {
       return;
     }
 
-    console.log(page);
-    console.log(query);
-
     const fetchPictures = () => {
       setIsLoading(true);
       getPictures(query, page)
@@ -49,8 +46,6 @@ export default function App() {
         })
         .finally(() => {
           setIsLoading(false);
-          console.log(page);
-          console.log(query);
         });
     };
     fetchPictures();
